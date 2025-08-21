@@ -1,0 +1,65 @@
+service: feedback-board-backend
+
+plugins:
+  - serverless-offline
+
+custom:
+  env:
+    dev: 'dev'
+    prod: 'prod'
+
+  config: ${file(env/${sls:stage}-${self:provider.region}.yml)}
+
+  serverless-offline:
+    httpPort: 4000
+    noPrependStageInUrl: true
+    noAuth: true
+
+  feedbacksTableName: feedbacks-${sls:stage}-table
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  httpApi:
+    cors: true
+  stage: ${opt:stage, 'dev'}
+  region: ap-south-1
+  endpointType: REGIONAL
+  timeout: 30
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.feedbacksTableName}
+  environment:
+    NODE_ENV: ${sls:stage}
+    IS_PRODUCTION: ${self:custom.config.IS_PRODUCTION}
+    FRONTEND_DOMAIN: ${self:custom.config.FRONTEND_DOMAIN}
+
+functions:
+  feedbackApis:
+    handler: src/handler.feedbackApisHandler
+    events:
+      - httpApi:
+          path: /health-check
+          method: GET
+    environment:
+      FEEDBACKS_TABLE_NAME: ${self:custom.feedbacksTableName}
+
+resources:
+  Resources:
+    feedbacksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.feedbacksTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST

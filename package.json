@@ -1,0 +1,30 @@
+{
+  "name": "feedback-board-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "sls offline --stage=dev",
+    "test": "jest --runInBand --coverage",
+    "deploy": "sls deploy --stage=dev"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.868.0",
+    "@aws-sdk/lib-dynamodb": "^3.868.0",
+    "express": "^5.1.0",
+    "serverless": "^4.18.0",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.3.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "jest": "^30.0.5",
+    "prettier": "^3.6.2",
+    "serverless-offline": "^14.4.0",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
