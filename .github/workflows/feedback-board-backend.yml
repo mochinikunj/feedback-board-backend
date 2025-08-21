@@ -12,7 +12,9 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm test
+
   Deploy:
+    needs: Test
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -24,4 +26,4 @@ jobs:
       - name: Deploy sls
         run: |
           echo "Starting the deployment process..."
-          npm deploy
+          npm run deploy
