@@ -1,7 +1,7 @@
 {
   "name": "feedback-board-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/handler.ts",
   "license": "MIT",
   "scripts": {
     "start": "sls offline --stage=dev",

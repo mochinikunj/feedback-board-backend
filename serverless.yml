@@ -47,6 +47,12 @@ functions:
       - httpApi:
           path: /health-check
           method: GET
+      - httpApi:
+          path: /feedback
+          method: GET
+      - httpApi:
+          path: /feedback
+          method: POST
     environment:
       FEEDBACKS_TABLE_NAME: ${self:custom.feedbacksTableName}
 
