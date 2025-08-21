@@ -1,7 +1,8 @@
-import { feedbackApisHandler } from '../handler';
+import { app } from '../handler';
+import supertest from 'supertest';
 
 describe('handler.ts', () => {
-  it('Should call handler', () => {
-    expect('Test cases to be added!').toBeTruthy();
+  it('Should call health-check api', (done) => {
+    supertest(app).get('/health-check').expect(200, done);
   });
 });
