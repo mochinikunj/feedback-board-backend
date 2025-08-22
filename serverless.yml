@@ -31,7 +31,7 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:PutItem
-            - dynamodb:GetItem
+            - dynamodb:Query
           Resource:
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.feedbacksTableName}
   environment:
