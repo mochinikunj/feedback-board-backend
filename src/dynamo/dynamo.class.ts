@@ -1,23 +1,20 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
-  GetCommand,
   PutCommand,
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { CONFIG } from '../configs/common.config';
-import { FeedbackRecord, FeedbackRequest } from '../models/feedback.model';
+import {
+  IFeedbackDynamoDbRecord,
+  ICreateFeedbackRequest,
+  IGetFeedbackRequest,
+} from '../models/feedback.model';
 import { v4 as uuidv4 } from 'uuid';
-
-enum FeedbacksTableIndexNames {
-  FeedbacksByTimestampIndex = 'FeedbacksByTimestampIndex',
-  FeedbacksByRatingIndex = 'FeedbacksByRatingIndex',
-}
-
-enum FeedbacksTableSortingAttributes {
-  timestamp = 'timestamp',
-  rating = 'rating',
-}
+import {
+  FeedbacksTableIndexNames,
+  FeedbacksTableSortingAttributes,
+} from '../enums/feedback.enum';
 
 export class DynamoDbOperations {
   private readonly client: DynamoDBClient;
@@ -33,7 +30,7 @@ export class DynamoDbOperations {
     this.tableName = process.env.FEEDBACKS_TABLE_NAME as string;
   }
 
-  async putItemInFeedbacksTable(feedback: FeedbackRequest) {
+  async putItemInFeedbacksTable(feedback: ICreateFeedbackRequest) {
     const mn = this.putItemInFeedbacksTable.name;
     try {
       const putItemParams = new PutCommand({
@@ -53,26 +50,25 @@ export class DynamoDbOperations {
   }
 
   async getFeedbacksFromFeedbacksTable(
-    sortBy: FeedbacksTableSortingAttributes,
-    ascendingSort = true,
-  ): Promise<FeedbackRecord[]> {
+    request: IGetFeedbackRequest,
+  ): Promise<IFeedbackDynamoDbRecord[]> {
     const mn = this.getFeedbacksFromFeedbacksTable.name;
     try {
       let indexName = FeedbacksTableIndexNames.FeedbacksByTimestampIndex;
-      if (sortBy === FeedbacksTableSortingAttributes.rating) {
+      if (request.sortBy === FeedbacksTableSortingAttributes.rating) {
         indexName = FeedbacksTableIndexNames.FeedbacksByRatingIndex;
       }
 
       const getItemParams = new QueryCommand({
         TableName: this.tableName,
         IndexName: indexName,
-        ScanIndexForward: ascendingSort,
+        ScanIndexForward: request.ascendingSort,
       });
       console.log(`${mn}:`, getItemParams.input);
 
       const response = await this.docClient.send(getItemParams);
       console.log(`${mn}:`, response.Items);
-      return response.Items as FeedbackRecord[];
+      return response.Items as IFeedbackDynamoDbRecord[];
     } catch (e: any) {
       console.error(`ERROR ${mn}`, e);
       throw new Error(e);
