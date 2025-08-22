@@ -1,8 +1,9 @@
-import { DynamoDBClient, QueryCommandInput } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
+  QueryCommandInput,
 } from '@aws-sdk/lib-dynamodb';
 import { CONFIG } from '../configs/common.config';
 import {
@@ -12,6 +13,7 @@ import {
 } from '../models/feedback.model';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  Category,
   FeedbacksTableIndexNames,
   FeedbacksTableSortingAttributes,
 } from '../enums/feedback.enum';
@@ -38,6 +40,7 @@ export class DynamoDbOperations {
         Item: {
           id: uuidv4(),
           timestamp: Date.now(),
+          category: Category.FEEDBACK,
           ...feedback,
         },
       });
@@ -54,19 +57,23 @@ export class DynamoDbOperations {
   ): Promise<IFeedbackDynamoDbRecord[]> {
     const mn = this.getFeedbacksFromFeedbacksTable.name;
     try {
-      const getItemParams: QueryCommandInput = {
+      const queryCommandParams: QueryCommandInput = {
         TableName: this.tableName,
+        KeyConditionExpression: 'category = :category',
+        ExpressionAttributeValues: {
+          ':category': Category.FEEDBACK,
+        },
       };
 
-      if (request.sortBy === FeedbacksTableSortingAttributes.rating) {
-        getItemParams.IndexName =
+      if (request.sortBy === FeedbacksTableSortingAttributes.RATING) {
+        queryCommandParams.IndexName =
           FeedbacksTableIndexNames.FeedbacksByRatingIndex;
       }
       if (request.descendingSort) {
-        getItemParams.ScanIndexForward = false;
+        queryCommandParams.ScanIndexForward = false;
       }
 
-      const getItemCommand = new QueryCommand(getItemParams);
+      const getItemCommand = new QueryCommand(queryCommandParams);
       console.log(`${mn}:`, getItemCommand.input);
 
       const response = await this.docClient.send(getItemCommand);

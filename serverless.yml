@@ -62,21 +62,21 @@ resources:
       Properties:
         TableName: ${self:custom.feedbacksTableName}
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: category
             AttributeType: S
           - AttributeName: timestamp
             AttributeType: N
           - AttributeName: rating
             AttributeType: N
         KeySchema:
-          - AttributeName: id
+          - AttributeName: category
             KeyType: HASH
           - AttributeName: timestamp
             KeyType: RANGE
         LocalSecondaryIndexes:
           - IndexName: FeedbacksByRatingIndex
             KeySchema:
-              - AttributeName: id
+              - AttributeName: category
                 KeyType: HASH
               - AttributeName: rating
                 KeyType: RANGE

@@ -7,6 +7,7 @@ export interface ICreateFeedbackRequest {
 }
 
 export interface IFeedbackDynamoDbRecord extends ICreateFeedbackRequest {
+  category: string;
   id: string;
   timestamp: number;
 }

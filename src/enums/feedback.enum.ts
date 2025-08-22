@@ -3,5 +3,9 @@ export enum FeedbacksTableIndexNames {
 }
 
 export enum FeedbacksTableSortingAttributes {
-  rating = 'rating',
+  RATING = 'rating',
+}
+
+export enum Category {
+  FEEDBACK = 'feedback',
 }
