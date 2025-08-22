@@ -6,7 +6,6 @@ plugins:
 custom:
   env:
     dev: 'dev'
-    prod: 'prod'
 
   config: ${file(env/${sls:stage}-${self:provider.region}.yml)}
 
@@ -65,7 +64,28 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
+          - AttributeName: rating
+            AttributeType: N
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+        LocalSecondaryIndexes:
+          - IndexName: FeedbacksByTimestampIndex
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+              - AttributeName: timestamp
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: FeedbacksByRatingIndex
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+              - AttributeName: rating
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
