@@ -3,18 +3,13 @@ import {
   ICreateFeedbackRequest,
   IGetFeedbackRequest,
 } from '../models/feedback.model';
-import isEmpty from 'validator/lib/isEmpty';
 import { DynamoDbOperations } from '../dynamo/dynamo.class';
 
 export const router = express.Router();
 
 router.post('/feedback', async (req, res) => {
   const body: ICreateFeedbackRequest = req.body;
-
-  const empty = Object.values(body).some((field) =>
-    isEmpty(field, { ignore_whitespace: false }),
-  );
-  if (empty) {
+  if (!body.name || !body.message || !Number.isFinite(body.rating)) {
     return res.status(400).send();
   }
 
