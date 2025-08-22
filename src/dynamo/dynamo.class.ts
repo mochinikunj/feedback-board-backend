@@ -35,6 +35,7 @@ export class DynamoDbOperations {
   async putItemInFeedbacksTable(feedback: ICreateFeedbackRequest) {
     const mn = this.putItemInFeedbacksTable.name;
     try {
+      // creating params to create & store feedback record in dynamo
       const putItemCommand = new PutCommand({
         TableName: this.tableName,
         Item: {
@@ -45,6 +46,8 @@ export class DynamoDbOperations {
         },
       });
       console.log(`${mn}:`, putItemCommand.input);
+
+      // making send call to execute the PutCommand operation on dynamo
       await this.docClient.send(putItemCommand);
     } catch (e: any) {
       console.error(`ERROR ${mn}`, e);
@@ -57,6 +60,7 @@ export class DynamoDbOperations {
   ): Promise<IFeedbackDynamoDbRecord[]> {
     const mn = this.getFeedbacksFromFeedbacksTable.name;
     try {
+      // creating params to fetch all feedback records from dynamo
       const queryCommandParams: QueryCommandInput = {
         TableName: this.tableName,
         KeyConditionExpression: 'category = :category',
@@ -65,20 +69,26 @@ export class DynamoDbOperations {
         },
       };
 
+      // if UI specifically passes the sortBy column then we're using index specific for that column
       if (request.sortBy === FeedbacksTableSortingAttributes.RATING) {
         queryCommandParams.IndexName =
           FeedbacksTableIndexNames.FeedbacksByRatingIndex;
       }
+
+      // if UI specifically passes the descendingSort then we're updating ScanIndexForward to false
       if (request.descendingSort) {
         queryCommandParams.ScanIndexForward = false;
       }
 
+      // generatin a final QueryCommand using params created above
       const getItemCommand = new QueryCommand(queryCommandParams);
       console.log(`${mn}:`, getItemCommand.input);
 
+      // making send call to execute the QueryCommand operation on dynamo
       const response = await this.docClient.send(getItemCommand);
       console.log(`${mn}:`, response.Items);
 
+      // retunrning the feedback list back to the api handler
       return response.Items as IFeedbackDynamoDbRecord[];
     } catch (e: any) {
       console.error(`ERROR ${mn}`, e);
