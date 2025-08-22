@@ -1,4 +1,7 @@
-import { FeedbacksTableSortingAttributes } from '../enums/feedback.enum';
+import {
+  FeedbacksTableSortingAttributes,
+  SortDirection,
+} from '../enums/feedback.enum';
 
 export interface ICreateFeedbackRequest {
   name: string;
@@ -14,5 +17,5 @@ export interface IFeedbackDynamoDbRecord extends ICreateFeedbackRequest {
 
 export interface IGetFeedbackRequest {
   sortBy?: FeedbacksTableSortingAttributes;
-  descendingSort?: boolean;
+  descendingSort?: SortDirection;
 }

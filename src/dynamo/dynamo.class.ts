@@ -16,6 +16,7 @@ import {
   Category,
   FeedbacksTableIndexNames,
   FeedbacksTableSortingAttributes,
+  SortDirection,
 } from '../enums/feedback.enum';
 
 export class DynamoDbOperations {
@@ -76,7 +77,7 @@ export class DynamoDbOperations {
       }
 
       // if UI specifically passes the descendingSort then we're updating ScanIndexForward to false
-      if (request.descendingSort) {
+      if (request.descendingSort === SortDirection.DESCENDING) {
         queryCommandParams.ScanIndexForward = false;
       }
 
@@ -86,7 +87,7 @@ export class DynamoDbOperations {
 
       // making send call to execute the QueryCommand operation on dynamo
       const response = await this.docClient.send(getItemCommand);
-      console.log(`${mn}:`, response.Items);
+      console.log(`${mn}:`, response.Items?.length);
 
       // retunrning the feedback list back to the api handler
       return response.Items as IFeedbackDynamoDbRecord[];

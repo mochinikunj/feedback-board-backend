@@ -9,3 +9,8 @@ export enum FeedbacksTableSortingAttributes {
 export enum Category {
   FEEDBACK = 'feedback',
 }
+
+export enum SortDirection {
+  ASCENDING = 'asc',
+  DESCENDING = 'desc',
+}

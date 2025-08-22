@@ -13,7 +13,13 @@ router.post('/feedback', async (req, res) => {
   console.log('Create feedback request:', body);
 
   // basic validation for request fields
-  if (!body.name || !body.message || !Number.isFinite(body.rating)) {
+  if (
+    !body.name ||
+    !body.message ||
+    !Number.isFinite(body.rating) ||
+    body.rating < 1 ||
+    body.rating > 5
+  ) {
     return res.status(400).send('Bad user request!');
   }
 
@@ -24,7 +30,7 @@ router.post('/feedback', async (req, res) => {
 
 // route to handle listing the feedbacks from dynamo to UI
 router.get('/feedback', async (req, res) => {
-  const body: IGetFeedbackRequest = req.body;
+  const body: IGetFeedbackRequest = req.query;
   console.log('Get feedbacks request:', body);
 
   // fetching feedback list from dynamo

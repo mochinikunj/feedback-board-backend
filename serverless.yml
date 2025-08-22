@@ -34,6 +34,7 @@ provider:
             - dynamodb:Query
           Resource:
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.feedbacksTableName}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.feedbacksTableName}/*
   environment:
     NODE_ENV: ${sls:stage}
     IS_PRODUCTION: ${self:custom.config.IS_PRODUCTION}

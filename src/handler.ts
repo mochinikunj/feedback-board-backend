@@ -12,4 +12,14 @@ app.use(healthCheck);
 app.use(feedback);
 
 // creating and serverless wrapper to run express on lambda
-export const feedbackApisHandler = ServerlessHttp(app);
+export const feedbackApisHandler = ServerlessHttp(app, {
+  request: (req: any, event: any) => {
+    if (typeof event.body === 'string') {
+      try {
+        req.body = JSON.parse(event.body);
+      } catch {
+        req.body = event.body;
+      }
+    }
+  },
+});
