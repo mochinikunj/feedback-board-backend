@@ -52,25 +52,6 @@ export class DynamoDbOperations {
     }
   }
 
-  async getFeedbackByIdFromFeedbacksTable(id: string): Promise<FeedbackRecord> {
-    const mn = this.getFeedbackByIdFromFeedbacksTable.name;
-    try {
-      const getItemParams = new GetCommand({
-        TableName: this.tableName,
-        Key: {
-          id,
-        },
-      });
-      console.log(`${mn}:`, getItemParams.input);
-      const response = await this.docClient.send(getItemParams);
-      console.log(`${mn}:`, response.Item);
-      return response.Item as FeedbackRecord;
-    } catch (e: any) {
-      console.error(`ERROR ${mn}`, e);
-      throw new Error(e);
-    }
-  }
-
   async getFeedbacksFromFeedbacksTable(
     sortBy: FeedbacksTableSortingAttributes,
     ascendingSort = true,
