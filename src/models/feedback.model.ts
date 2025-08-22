@@ -12,6 +12,6 @@ export interface IFeedbackDynamoDbRecord extends ICreateFeedbackRequest {
 }
 
 export interface IGetFeedbackRequest {
-  sortBy: FeedbacksTableSortingAttributes;
-  ascendingSort: boolean;
+  sortBy?: FeedbacksTableSortingAttributes;
+  descendingSort?: boolean;
 }

@@ -25,13 +25,6 @@ router.post('/feedback', async (req, res) => {
 router.get('/feedback', async (req, res) => {
   const body: IGetFeedbackRequest = req.body;
 
-  const empty = Object.values(body).some((field) =>
-    isEmpty(field, { ignore_whitespace: false }),
-  );
-  if (empty) {
-    return res.status(400).send();
-  }
-
   const feedbacks =
     await new DynamoDbOperations().getFeedbacksFromFeedbacksTable(body);
 

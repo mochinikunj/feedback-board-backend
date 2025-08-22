@@ -1,4 +1,4 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, QueryCommandInput } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
@@ -33,7 +33,7 @@ export class DynamoDbOperations {
   async putItemInFeedbacksTable(feedback: ICreateFeedbackRequest) {
     const mn = this.putItemInFeedbacksTable.name;
     try {
-      const putItemParams = new PutCommand({
+      const putItemCommand = new PutCommand({
         TableName: this.tableName,
         Item: {
           id: uuidv4(),
@@ -41,8 +41,8 @@ export class DynamoDbOperations {
           ...feedback,
         },
       });
-      console.log(`${mn}:`, putItemParams.input);
-      await this.docClient.send(putItemParams);
+      console.log(`${mn}:`, putItemCommand.input);
+      await this.docClient.send(putItemCommand);
     } catch (e: any) {
       console.error(`ERROR ${mn}`, e);
       throw new Error(e);
@@ -54,20 +54,24 @@ export class DynamoDbOperations {
   ): Promise<IFeedbackDynamoDbRecord[]> {
     const mn = this.getFeedbacksFromFeedbacksTable.name;
     try {
-      let indexName = FeedbacksTableIndexNames.FeedbacksByTimestampIndex;
+      const getItemParams: QueryCommandInput = {
+        TableName: this.tableName,
+      };
+
       if (request.sortBy === FeedbacksTableSortingAttributes.rating) {
-        indexName = FeedbacksTableIndexNames.FeedbacksByRatingIndex;
+        getItemParams.IndexName =
+          FeedbacksTableIndexNames.FeedbacksByRatingIndex;
+      }
+      if (request.descendingSort) {
+        getItemParams.ScanIndexForward = false;
       }
 
-      const getItemParams = new QueryCommand({
-        TableName: this.tableName,
-        IndexName: indexName,
-        ScanIndexForward: request.ascendingSort,
-      });
-      console.log(`${mn}:`, getItemParams.input);
+      const getItemCommand = new QueryCommand(getItemParams);
+      console.log(`${mn}:`, getItemCommand.input);
 
-      const response = await this.docClient.send(getItemParams);
+      const response = await this.docClient.send(getItemCommand);
       console.log(`${mn}:`, response.Items);
+
       return response.Items as IFeedbackDynamoDbRecord[];
     } catch (e: any) {
       console.error(`ERROR ${mn}`, e);
