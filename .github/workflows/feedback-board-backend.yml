@@ -26,4 +26,4 @@ jobs:
       - name: Deploy sls
         run: |
           echo "Starting the deployment process..."
-          npm run deploy
+          # npm run deploy
