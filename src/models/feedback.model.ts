@@ -1,6 +1,7 @@
 import {
   FeedbacksTableSortingAttributes,
   SortDirection,
+  Status,
 } from '../enums/feedback.enum';
 
 export interface ICreateFeedbackRequest {
@@ -18,4 +19,10 @@ export interface IFeedbackDynamoDbRecord extends ICreateFeedbackRequest {
 export interface IGetFeedbackRequest {
   sortBy?: FeedbacksTableSortingAttributes;
   descendingSort?: SortDirection;
+}
+
+export interface IFeedbackApisResponse {
+  status: Status;
+  message: string;
+  body?: JSON;
 }

@@ -14,3 +14,8 @@ export enum SortDirection {
   ASCENDING = 'asc',
   DESCENDING = 'desc',
 }
+
+export enum Status {
+  OK = 'OK',
+  NOK = 'NOK',
+}

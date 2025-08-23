@@ -4,6 +4,7 @@ import {
   IGetFeedbackRequest,
 } from '../models/feedback.model';
 import { DynamoDbOperations } from '../dynamo/dynamo.class';
+import { Status } from '../enums/feedback.enum';
 
 export const router = express.Router();
 
@@ -20,12 +21,18 @@ router.post('/feedback', async (req, res) => {
     body.rating < 1 ||
     body.rating > 5
   ) {
-    return res.status(400).send('Bad user request!');
+    return res.status(400).send({
+      status: Status.NOK,
+      message: 'Bad user request!',
+    });
   }
 
   // making a dynamo call to create & store feedback
   await new DynamoDbOperations().putItemInFeedbacksTable(body);
-  return res.send(true);
+  return res.send({
+    status: Status.OK,
+    message: 'Feedback created...',
+  });
 });
 
 // route to handle listing the feedbacks from dynamo to UI
@@ -40,5 +47,9 @@ router.get('/feedback', async (req, res) => {
     );
 
   // returning the feedback list back to UI
-  return res.send(feedbacks);
+  return res.send({
+    status: Status.OK,
+    message: 'Success...',
+    body: feedbacks,
+  });
 });

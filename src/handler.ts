@@ -1,6 +1,7 @@
 import express from 'express';
 import ServerlessHttp from 'serverless-http';
 import { feedback, healthCheck } from './routes';
+import { normalizeLambdaRequest } from './utils/utils';
 
 export const app = express();
 
@@ -13,13 +14,5 @@ app.use(feedback);
 
 // creating and serverless wrapper to run express on lambda
 export const feedbackApisHandler = ServerlessHttp(app, {
-  request: (req: any, event: any) => {
-    if (typeof event.body === 'string') {
-      try {
-        req.body = JSON.parse(event.body);
-      } catch {
-        req.body = event.body;
-      }
-    }
-  },
+  request: normalizeLambdaRequest,
 });
