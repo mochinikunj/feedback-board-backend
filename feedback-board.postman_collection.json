@@ -1,0 +1,89 @@
+{
+	"info": {
+		"_postman_id": "ad8f352d-be8c-4ae6-b0fa-9e805641b56b",
+		"name": "feedback-board",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28527087"
+	},
+	"item": [
+		{
+			"name": "health-check",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_endpoint}}/health-check",
+					"host": [
+						"{{api_endpoint}}"
+					],
+					"path": [
+						"health-check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET feedback",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_endpoint}}/feedback?sortBy=rating&descendingSort=asc",
+					"host": [
+						"{{api_endpoint}}"
+					],
+					"path": [
+						"feedback"
+					],
+					"query": [
+						{
+							"key": "sortBy",
+							"value": "rating"
+						},
+						{
+							"key": "descendingSort",
+							"value": "asc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST feedback",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sample Name\",\r\n    \"message\": \"Sample message!\",\r\n    \"rating\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_endpoint}}/feedback",
+					"host": [
+						"{{api_endpoint}}"
+					],
+					"path": [
+						"feedback"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
